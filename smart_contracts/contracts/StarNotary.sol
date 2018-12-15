@@ -5,7 +5,11 @@ import 'openzeppelin-solidity/contracts/token/ERC721/ERC721.sol';
 contract StarNotary is ERC721 { 
 
     struct Star { 
-        string name; 
+        string name;
+        string starStory;
+        string ra;
+        string dec;
+        string mag;
     }
 
     mapping(uint256 => Star) public tokenIdToStarInfo; 
