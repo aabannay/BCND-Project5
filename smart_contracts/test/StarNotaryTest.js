@@ -9,9 +9,10 @@ contract('StarNotary', accounts => {
     describe('can create a star', () => { 
         it('can create a star and get its name', async function () { 
             
-            await this.contract.createStar('awesome star!', 1, {from: accounts[0]})
+            await this.contract.createStar('awesome star!','the story is not boring','1','1','1', 1, {from: accounts[0]})
 
-            assert.equal(await this.contract.tokenIdToStarInfo(1), 'awesome star!')
+            //use deepEqual here to compare arrays because equal compares objects rather than their data
+            assert.deepEqual(await this.contract.tokenIdToStarInfo(1), ['awesome star!','the story is not boring','1','1','1']);
         })
     })
 
@@ -24,7 +25,7 @@ contract('StarNotary', accounts => {
         let starPrice = web3.toWei(.01, "ether")
 
         beforeEach(async function () { 
-            await this.contract.createStar('awesome star!', starId, {from: user1})    
+            await this.contract.createStar('awesome star!','the story is not boring','1','1','1', starId, {from: user1})    
         })
 
         it('user1 can put up their star for sale', async function () { 

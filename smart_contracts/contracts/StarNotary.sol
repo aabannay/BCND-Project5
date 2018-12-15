@@ -15,8 +15,19 @@ contract StarNotary is ERC721 {
     mapping(uint256 => Star) public tokenIdToStarInfo; 
     mapping(uint256 => uint256) public starsForSale;
 
-    function createStar(string _name, uint256 _tokenId) public { 
-        Star memory newStar = Star(_name);
+    //new mapping for the coordinates
+    //the keccak256 of the 3 cooridnates to the token ID 
+    mapping(bytes32 => bool) public coordinatesRecorded;
+
+    function createStar(string _name, string _starStory, string _ra, string _dec, string _mag, uint256 _tokenId) public { 
+        //check if the star is unique
+        //this is done by checking the uniqueness of the star's coordinates
+        require(!coordinatesRecorded[keccak256(_ra, _dec, _mag)]); //star was not recorded
+
+        Star memory newStar = Star({name: _name, starStory: _starStory, ra: _ra, dec: _dec, mag: _mag});
+        
+        //add the star coordinates hash to the cooridnates recorded
+        coordinatesRecorded[keccak256(_ra, _dec, _mag)] = true; 
 
         tokenIdToStarInfo[_tokenId] = newStar;
 
