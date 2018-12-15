@@ -12,8 +12,16 @@ contract('StarNotary', accounts => {
             await this.contract.createStar('awesome star!','the story is not boring','1','1','1', 1, {from: accounts[0]})
 
             //use deepEqual here to compare arrays because equal compares objects rather than their data
-            assert.deepEqual(await this.contract.tokenIdToStarInfo(1), ['awesome star!','the story is not boring','1','1','1']);
+            assert.deepEqual(await this.contract.tokenIdToStarInfo(1), ['awesome star!','the story is not boring','ra_1','dec_1','mag_1'])
         })
+
+        /*
+        it('gives an error once trying to create a star with same coordinates', async function () {
+                await this.contract.createStar('awesome star!','the story is not boring','1','1','1', 1, {from: accounts[0]})
+                await this.contract.createStar('awesome star!','the story is not boring','1','1','1', 2, {from: accounts[0]})
+                expect(revert);
+            })
+            */
     })
 
     describe('buying and selling stars', () => { 
