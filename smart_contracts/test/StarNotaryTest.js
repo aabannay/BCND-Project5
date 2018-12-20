@@ -1,5 +1,10 @@
 const StarNotary = artifacts.require('StarNotary')
 
+//to test the revert error 
+function errorIsRevert(error) {
+    return error.message.startsWith("VM Exception while processing transaction: revert")
+}
+
 contract('StarNotary', accounts => { 
 
     beforeEach(async function() { 
@@ -14,14 +19,49 @@ contract('StarNotary', accounts => {
             //use deepEqual here to compare arrays because equal compares objects rather than their data
             assert.deepEqual(await this.contract.tokenIdToStarInfo(1), ['awesome star!','the story is not boring','ra_1','dec_1','mag_1'])
         })
+    })
 
-        /*
-        it('gives an error once trying to create a star with same coordinates', async function () {
+    //this will test if the star uniqueness logic is correct
+    describe('star uniqueness', () => {
+        let user1 = accounts[1]
+        it('only stars unique stars can be minted', async function() { 
+            // first we mint our first star
+            await this.contract.createStar('awesome star!','the story is not boring','1','1','1', 1, {from: accounts[0]})
+            // then we try to mint the same star, and we expect an error
+            try {
                 await this.contract.createStar('awesome star!','the story is not boring','1','1','1', 1, {from: accounts[0]})
+            } catch(error) {
+                assert(errorIsRevert(error))
+            }
+        })
+
+        it('only stars unique stars can be minted even if their ID is different', async function() { 
+            // first we mint our first star
+            await this.contract.createStar('awesome star!','the story is not boring','1','1','1', 1, {from: accounts[0]})
+            // then we try to mint the same star, and we expect an error
+            
+            try {
                 await this.contract.createStar('awesome star!','the story is not boring','1','1','1', 2, {from: accounts[0]})
-                expect(revert);
-            })
-            */
+            } catch(error) {
+                assert(errorIsRevert(error))
+            }
+        })
+
+        it('minting unique stars does not fail', async function() { 
+            for(let i = 0; i < 10; i ++) { 
+                let id = i
+                let name = "The Name: " + i; 
+                let starStory = "The Story: " + i; 
+                let newRa = i.toString()
+                let newDec = i.toString()
+                let newMag = i.toString()
+
+                await this.contract.createStar(name, starStory, newRa, newDec, newMag, id, {from: user1})
+
+                let starInfo = await this.contract.tokenIdToStarInfo(id)
+                assert.equal(starInfo[0], name)
+            }
+        })
     })
 
     describe('buying and selling stars', () => { 
