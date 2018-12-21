@@ -60,6 +60,10 @@ contract('StarNotary', accounts => {
 
                 let starInfo = await this.contract.tokenIdToStarInfo(id)
                 assert.equal(starInfo[0], name)
+                assert.equal(starInfo[1], starStory)
+                assert.equal(starInfo[2], 'ra_' + newRa)
+                assert.equal(starInfo[3], 'dec_' + newDec)
+                assert.equal(starInfo[4], 'mag_' + newMag)
             }
         })
     })
