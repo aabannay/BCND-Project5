@@ -33,6 +33,10 @@ contract('StarNotary', accounts => {
         it('only stars unique stars can be minted', async function() { 
             // first we mint our first star
             await this.contract.createStar('awesome star!','the story is not boring','1','1','1', 1, {from: accounts[0]})
+            
+            //check if the star really exist 
+            assert(await this.contract.checkIfStarExist('1','1','1'))
+
             // then we try to mint the same star, and we expect an error
             try {
                 await this.contract.createStar('awesome star!','the story is not boring','1','1','1', 1, {from: accounts[0]})
@@ -46,6 +50,9 @@ contract('StarNotary', accounts => {
             await this.contract.createStar('awesome star!','the story is not boring','1','1','1', 1, {from: accounts[0]})
             // then we try to mint the same star, and we expect an error
             
+            //check if the star really exist 
+            assert(await this.contract.checkIfStarExist('1','1','1'))
+
             try {
                 await this.contract.createStar('awesome star!','the story is not boring','1','1','1', 2, {from: accounts[0]})
             } catch(error) {
@@ -62,8 +69,12 @@ contract('StarNotary', accounts => {
                 let newDec = i.toString()
                 let newMag = i.toString()
 
+                //check if the star does not. exist before creating it
+                assert.isFalse(await this.contract.checkIfStarExist(newRa, newDec, newMag))
+
                 await this.contract.createStar(name, starStory, newRa, newDec, newMag, id, {from: user1})
 
+                //check the info of the star as provided and expected
                 let starInfo = await this.contract.tokenIdToStarInfo(id)
                 assert.equal(starInfo[0], name)
                 assert.equal(starInfo[1], starStory)

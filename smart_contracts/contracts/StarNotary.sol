@@ -59,7 +59,7 @@ contract StarNotary is ERC721 {
         }
     }
 
-    function checkIfStarExist(string _ra, string _dec, string _mag) public returns (bool){
+    function checkIfStarExist(string _ra, string _dec, string _mag) public view returns (bool) {
         return coordinatesRecorded[keccak256(_ra, _dec, _mag)];
     }
 
