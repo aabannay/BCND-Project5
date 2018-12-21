@@ -24,12 +24,12 @@ contract StarNotary is ERC721 {
     function createStar(string _name, string _starStory, string _ra, string _dec, string _mag, uint256 _tokenId) public { 
         //check if the star is unique
         //this is done by checking the uniqueness of the star's coordinates
-        require(!coordinatesRecorded[keccak256(_ra, _dec, _mag)]); //star was not recorded
+        require(!coordinatesRecorded[keccak256(abi.encodePacked(_ra, _dec, _mag))]); //star was not recorded
 
         Star memory newStar = Star({name: _name, starStory: _starStory, ra: _ra, dec: _dec, mag: _mag});
         
         //add the star coordinates hash to the cooridnates recorded
-        coordinatesRecorded[keccak256(_ra, _dec, _mag)] = true; 
+        coordinatesRecorded[keccak256(abi.encodePacked(_ra, _dec, _mag))] = true; 
 
         tokenIdToStarInfo[_tokenId] = newStar;
 
@@ -60,7 +60,7 @@ contract StarNotary is ERC721 {
     }
 
     function checkIfStarExist(string _ra, string _dec, string _mag) public view returns (bool) {
-        return coordinatesRecorded[keccak256(_ra, _dec, _mag)];
+        return coordinatesRecorded[keccak256(abi.encodePacked(_ra, _dec, _mag))];
     }
 
     /* function starsForSale(uint256 tokenId) public view returns (uint256){
@@ -68,7 +68,7 @@ contract StarNotary is ERC721 {
     } */
 
     function tokenIdToStarInfo(uint256 tokenId) public view returns (string, string, string, string, string){
-        Star star = tokenIdToStarInfo[tokenId];
+        Star memory star = tokenIdToStarInfo[tokenId];
         string memory raString = strConcat("ra_", star.ra);
         string memory decString = strConcat("dec_", star.dec);
         string memory magString = strConcat("mag_", star.mag);
@@ -108,7 +108,7 @@ contract StarNotary is ERC721 {
     //string concatenating functions 
     //resorce: https://ethereum.stackexchange.com/questions/729/how-to-concatenate-strings-in-solidity
     //MODIFIED to cover 2 string cases, the original function from resource can concatenate upto 5 strings.
-    function strConcat(string _a, string _b) internal returns (string){
+    function strConcat(string _a, string _b) internal pure returns (string){
         bytes memory _ba = bytes(_a);
         bytes memory _bb = bytes(_b);
 
