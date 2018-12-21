@@ -170,7 +170,32 @@ contract('StarNotary', accounts => {
                 tx2 = await this.contract.transferFrom(user2, user3, tokenId, {from: user2})
                 assert.equal(await this.contract.ownerOf(tokenId), user3)
             })
+        })
 
+    })
+
+     describe('can grant approval to transfer', () => { 
+        let tokenId = 1
+        let tx 
+        user3 = accounts[4]
+
+        beforeEach(async function () { 
+            await this.contract.mint(user1, tokenId, {from: user1})
+            tx = await this.contract.approve(user2, tokenId, {from: user1})
+        })
+
+        it('set user2 as an approved address', async function () { 
+            assert.equal(await this.contract.getApproved(tokenId), user2)
+        })
+
+        //user2 will transfer from user1 to user3 because user2 is approved
+        it('user2 can now transfer', async function () { 
+            let tx2 = await this.contract.transferFrom(user1, user3, tokenId, {from: user2})
+            assert.equal(await this.contract.ownerOf(tokenId), user3)
+        })
+
+        it('emits the correct event', async function () { 
+            assert.equal(tx.logs[0].event, 'Approval')
         })
     })
  
