@@ -136,5 +136,42 @@ contract('StarNotary', accounts => {
             assert.equal(tx.logs[0].event, 'Transfer')
         })
     })
+
+    describe('can transfer token', () => { 
+        let tokenId = 1
+        let tx 
+        let user3 = accounts[4]
+
+        beforeEach(async function () { 
+            await this.contract.mint(user1, tokenId, {from: user1})
+
+            tx = await this.contract.transferFrom(user1, user2, tokenId, {from: user1})
+        })
+
+        it('token has new owner', async function () { 
+            assert.equal(await this.contract.ownerOf(tokenId), user2)
+        })
+
+        it('emits the correct event', async function () { 
+            assert.equal(tx.logs[0].event, 'Transfer')
+        })
+
+        it('only permissioned users can transfer tokens', async function() { 
+            it('revert if user1 tries to transfer same token that he already transffered', async () => {
+                try {
+                    await this.contract.transferFrom(user1, user2, tokenId, {from: user1})
+                } catch (error) {
+                    assert(errorIsRevert(error))
+                }
+            })
+            
+            it('user2 now can transfer the token to another user: user3', async () => {
+                let tx2
+                tx2 = await this.contract.transferFrom(user2, user3, tokenId, {from: user2})
+                assert.equal(await this.contract.ownerOf(tokenId), user3)
+            })
+
+        })
+    })
  
 })
