@@ -76,7 +76,7 @@ contract StarNotary is ERC721 {
     }
 
     //methods that are implemented by openzeppelin 
-    function mint(address to, uint256 tokenId) internal {
+    function mint(address to, uint256 tokenId) public {
         super._mint(to, tokenId);
     }
 

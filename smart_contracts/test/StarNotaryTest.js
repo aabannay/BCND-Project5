@@ -7,8 +7,14 @@ function errorIsRevert(error) {
 
 contract('StarNotary', accounts => { 
 
+    //accounts to be used during test 
+    var defaultAccount = accounts[0]
+    var user1 = accounts[1]
+    var user2 = accounts[2]
+    var operator = accounts[3]
+
     beforeEach(async function() { 
-        this.contract = await StarNotary.new({from: accounts[0]})
+        this.contract = await StarNotary.new({from: defaultAccount})
     })
     
     describe('can create a star', () => { 
@@ -107,4 +113,28 @@ contract('StarNotary', accounts => {
             })
         })
     })
+
+
+    //this is for testing the token functionality i.e. ERC721   
+    describe('can create a token', () => { 
+        let tokenId = 1
+        let tx
+
+        beforeEach(async function () { 
+            tx = await this.contract.mint(user1, tokenId, {from: user1})
+        })
+
+        it('ownerOf tokenId is user1', async function () { 
+            assert.equal(await this.contract.ownerOf(tokenId), user1)
+        })
+
+        it('balanceOf user1 is incremented by 1', async function () { 
+            assert.equal(await this.contract.balanceOf(user1), 1)
+        })
+
+        it('emits the correct event during creation of a new token', async function () { 
+            assert.equal(tx.logs[0].event, 'Transfer')
+        })
+    })
+ 
 })
