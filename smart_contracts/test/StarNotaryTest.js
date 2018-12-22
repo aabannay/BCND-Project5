@@ -132,7 +132,7 @@ contract('StarNotary', accounts => {
         let tx
 
         beforeEach(async function () { 
-            tx = await this.contract.mint(user1, tokenId, {from: user1})
+            tx = await this.contract._mint(user1, tokenId, {from: user1})
         })
 
         it('ownerOf tokenId is user1', async function () { 
@@ -154,7 +154,7 @@ contract('StarNotary', accounts => {
         let user3 = accounts[4]
 
         beforeEach(async function () { 
-            await this.contract.mint(user1, tokenId, {from: user1})
+            await this.contract._mint(user1, tokenId, {from: user1})
 
             tx = await this.contract.transferFrom(user1, user2, tokenId, {from: user1})
         })
@@ -191,7 +191,7 @@ contract('StarNotary', accounts => {
         user3 = accounts[4]
 
         beforeEach(async function () { 
-            await this.contract.mint(user1, tokenId, {from: user1})
+            await this.contract._mint(user1, tokenId, {from: user1})
             tx = await this.contract.approve(user2, tokenId, {from: user1})
         })
 
@@ -215,7 +215,7 @@ contract('StarNotary', accounts => {
         let tx 
 
         beforeEach(async function () { 
-            await this.contract.mint(user1, tokenId, {from: user1})
+            await this.contract._mint(user1, tokenId, {from: user1})
 
             tx = await this.contract.setApprovalForAll(operator, true, {from: user1})
         })

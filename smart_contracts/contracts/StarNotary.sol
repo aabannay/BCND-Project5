@@ -33,7 +33,7 @@ contract StarNotary is ERC721 {
 
         tokenIdToStarInfo[_tokenId] = newStar;
 
-        mint(msg.sender, _tokenId);
+        _mint(msg.sender, _tokenId);
     }
 
     function putStarUpForSale(uint256 _tokenId, uint256 _price) public { 
@@ -75,40 +75,14 @@ contract StarNotary is ERC721 {
         return (star.name, star.starStory, raString, decString, magString);
     }
 
-    //methods that are implemented by openzeppelin 
-    function mint(address to, uint256 tokenId) public {
-        super._mint(to, tokenId);
-    }
+   //no need to implement other functions that are implemented by ERC721 
+   //however, they are all covered in the tokenIdToStarInfo
 
-    function approve(address to, uint256 tokenId) public {
-        super.approve(to, tokenId);
-    }
-
-    function safeTransferFrom(address from, address to, uint256 tokenId, bytes _data) public {
-        super.safeTransferFrom(from, to, tokenId, _data);
-    }
-
-    function setApprovalForAll(address to, bool approved) public {
-        super.setApprovalForAll(to, approved);
-    }
-
-    function getApproved(uint256 tokenId) public view returns (address) {
-        return super.getApproved(tokenId);
-    }
-
-    function isApprovedForAll(address owner, address operator) public view returns (bool) {
-        return super.isApprovedForAll(owner, operator);
-    }
-
-    function ownerOf(uint256 tokenId) public view returns (address) {
-        return super.ownerOf(tokenId);
-    }
-
-
+   
     //string concatenating functions 
     //resorce: https://ethereum.stackexchange.com/questions/729/how-to-concatenate-strings-in-solidity
     //MODIFIED to cover 2 string cases, the original function from resource can concatenate upto 5 strings.
-    function strConcat(string _a, string _b) internal pure returns (string){
+    function strConcat(string _a, string _b) internal returns (string){
         bytes memory _ba = bytes(_a);
         bytes memory _bb = bytes(_b);
 
